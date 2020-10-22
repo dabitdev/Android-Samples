@@ -4,13 +4,17 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.getlocationbackground.service.LocationService
 import com.getlocationbackground.util.Util
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     var mLocationService: LocationService = LocationService()
@@ -20,6 +24,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent()
+            val packageName = packageName
+            val pm = getSystemService(POWER_SERVICE) as PowerManager
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+        }
 
         mActivity = this@MainActivity
 
@@ -65,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         requestCode: Int
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions!!, requestCode)
+            requestPermissions(permissions, requestCode)
         }
     }
 
