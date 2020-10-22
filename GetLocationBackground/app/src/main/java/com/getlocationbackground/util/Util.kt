@@ -1,22 +1,20 @@
 package com.getlocationbackground.util
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import android.os.Build
 import android.provider.Settings
 import android.util.Log
 
 object Util {
-    fun isMyServiceRunning(serviceClass: Class<*>, mActivity: Activity): Boolean {
+    fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
         val manager: ActivityManager =
-            mActivity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.getClassName()) {
+            if (serviceClass.name == service.service.className) {
                 Log.i("Service status", "Running")
                 return true
             }
